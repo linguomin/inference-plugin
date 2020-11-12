@@ -1,4 +1,4 @@
-# sense-inference-plugin
+# inference-plugin
 
 描述：根据算法得到的推理结果展示物体检测、图像分类、图像分割内容
 
@@ -7,13 +7,13 @@
 ### 安装
 
 ```install
-npm istall sense-inference-plugin
+npm istall inference-plugin
 ```
 
 ### 组件内引入
 
 ```import
-import senseInference from 'sense-inference-plugin';
+import senseInference from 'inference-plugin';
 ```
 
 ### 实例化前提
