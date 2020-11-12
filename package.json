@@ -1,0 +1,22 @@
+{
+  "name": "inference-plugin",
+  "version": "1.0.0",
+  "description": "根据算法得到的推理结果展示物体检测、图像分类、图像分割内容",
+  "main": "inference-plugin.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/linguomin/inference-plugin.git"
+  },
+  "keywords": [
+    "inference"
+  ],
+  "author": "linguomin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/linguomin/inference-plugin/issues"
+  },
+  "homepage": "https://github.com/linguomin/inference-plugin#readme"
+}
