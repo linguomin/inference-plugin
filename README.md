@@ -80,10 +80,26 @@ classification.init(url);
 #### 图像分割算法调用
 
 ```lightSeg
-const url = "base64图片";
+const url = "./img.png";
+
+const data = [
+  [0,1,2,0,0,0,1,1,1,2,2,2,1,1,0],
+  [0,1,2,0,0,0,1,1,1,2,2,2,1,1,0],
+  [0,1,2,0,0,0,1,1,1,2,2,2,1,1,0],
+  [0,1,2,0,0,0,1,1,1,2,2,2,1,1,0],
+  [0,1,2,0,0,0,1,1,1,2,2,2,1,1,0],
+]; // 数组内代表标签枚举，0为背景色，其余视情况而定
 
 // 初始化实例
 const lightSeg = new senseInference("myCanvas");
+
+// 可设定背景颜色,0不渲染，其余可设定标签枚举定义颜色；
+// 如不设定则不需要调用addSegmentationColor方法，内部自取随机100种颜色，不设定颜色最多支持100种颜色
+const color = { 0: '#000', 1: "red" };
+lightSeg.addSegmentationColor({ 0: "#000", 1: "red" });
+
+// 添加图像分割数据
+lightSeg.addSegmentation(data);
 
 // 传入url加载图片
 lightSeg.init(url);

@@ -11,6 +11,7 @@ export default class senseInference {
 
     this.detection = null; // 物体检测数据
     this.classification = null; // 图像分类数据
+    this.segmentation = null; // 图像分割数据
 
     this.detectionStyle = {
       lineWidth: 1,
@@ -31,10 +32,13 @@ export default class senseInference {
       fontSize: 20,
       color: "#fff",
     };
+
+    this.segmentationStyle = {};
   }
 
   // 生成图片及图中内容
   init(url) {
+    this.image.url = url;
     // 生成画布DOM
     this.canvas.dom = document.createElement("canvas");
     this.canvas.dom.setAttribute("id", "senseCanvas");
@@ -46,8 +50,7 @@ export default class senseInference {
     this.canvas.ctx = this.canvas.dom.getContext("2d");
     // 生成加载图片
     const image = new Image();
-    image.src = url;
-    this.image.url = url;
+    image.src = this.image.url;
     image.onload = () => {
       this.image.width = image.width;
       this.image.height = image.height;
@@ -75,7 +78,6 @@ export default class senseInference {
 
       // 缩放比例
       this.scale = this.image.width / this.senseImage.width;
-
       // 画图
       this.canvas.ctx.drawImage(
         image,
@@ -84,6 +86,7 @@ export default class senseInference {
         this.senseImage.width,
         this.senseImage.height
       );
+
       if (this.detection) {
         this.loadDetection();
       }
@@ -91,7 +94,18 @@ export default class senseInference {
         this.loadClassification();
       }
       if (this.segmentation) {
-        this.loadSegmentation();
+        this.loadSegmentation().then((res) => {
+          image.src = res;
+          image.onload = () => {
+            this.canvas.ctx.drawImage(
+              image,
+              this.senseImage.position[0],
+              this.senseImage.position[1],
+              this.senseImage.width,
+              this.senseImage.height
+            );
+          };
+        });
       }
     };
   }
@@ -131,6 +145,53 @@ export default class senseInference {
       [this.senseImage.position[0] + 20, this.senseImage.position[1] + 40],
       this.classificationStyle
     );
+  }
+
+  // 加载图片分割数据
+  loadSegmentation() {
+    return new Promise((resolve) => {
+      const virtualCanvas = document.createElement("canvas");
+      // 生成加载图片
+      const image = new Image();
+      image.src = this.image.url;
+      image.onload = () => {
+        virtualCanvas.width = image.width;
+        virtualCanvas.height = image.height;
+        virtualCanvas.setAttribute("style", "visibility: hidden");
+        document.body.append(virtualCanvas);
+        // 获取画笔
+        const virtualCtx = virtualCanvas.getContext("2d");
+        virtualCtx.lineWidth = 1;
+
+        for (let y = 0; y <= this.segmentation.length; y++) {
+          for (let x = 0; x <= this.segmentation[0].length; x++) {
+            if (!this.segmentation[y] || this.segmentation[y][x] === 0) {
+              continue;
+            }
+
+            if (x == 0) {
+              virtualCtx.beginPath();
+              virtualCtx.strokeStyle = this.segmentationStyle[
+                this.segmentation[y][x]
+              ];
+              virtualCtx.moveTo(y, x);
+            } else if (this.segmentation[y][x] == this.segmentation[y][x - 1]) {
+              virtualCtx.lineTo(y, x);
+            } else {
+              virtualCtx.stroke();
+              virtualCtx.beginPath();
+              virtualCtx.strokeStyle = this.segmentationStyle[
+                this.segmentation[y][x]
+              ];
+              virtualCtx.moveTo(y, x);
+            }
+          }
+        }
+        const base64Url = virtualCanvas.toDataURL("image/png");
+        document.body.removeChild(virtualCanvas);
+        resolve(base64Url);
+      };
+    });
   }
 
   // 绘制矩形
@@ -184,5 +245,25 @@ export default class senseInference {
   // 添加图像分类数据
   addClassification(data) {
     this.classification = data;
+  }
+
+  // 添加图像分割数据
+  addSegmentation(data) {
+    this.segmentation = data;
+    if (JSON.stringify(this.segmentationStyle) === "{}") {
+      for (let index = 0; index <= 100; index++) {
+        this.segmentationStyle[index] = this.getRandomColor();
+      }
+    }
+  }
+
+  // 添加颜色
+  addSegmentationColor(data) {
+    this.segmentationStyle = data;
+  }
+
+  // 生成随机颜色
+  getRandomColor() {
+    return "#" + Math.random().toString(16).slice(2, 8);
   }
 }

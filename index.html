@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>plugin</title>
+    <script src="./dist/index.min.js"></script>
+    <style>
+      #canvas {
+        width: 1000px;
+        height: 800px;
+        border: 1px solid red;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="canvas"></div>
+    <script>
+      const plugin = new senseInference("canvas");
+      const data = [];
+
+      for (let i = 0; i < 1920; i++) {
+        data[i] = [];
+        for (let j = 0; j < 1080; j++) {
+          data[i][j] = Math.round(Math.random() * 120);
+        }
+      }
+      // plugin.addSegmentationColor({ 0: "#000", 1: "red" });
+      plugin.addSegmentation(data);
+      plugin.init("./src/image/test.jpeg");
+      // plugin.init("./Selection_004.png");
+      console.log(plugin);
+    </script>
+  </body>
+</html>

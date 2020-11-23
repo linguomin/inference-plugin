@@ -1,9 +1,12 @@
 {
   "name": "inference-plugin",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "根据算法得到的推理结果展示物体检测、图像分类、图像分割内容",
-  "main": "inference-plugin.js",
+  "main": "dist/index.min.js",
   "scripts": {
+    "build": "npm run babel && npm run uglifyjs",
+    "babel": "babel src/index.js -o dist/index.js",
+    "uglifyjs": "uglifyjs dist/index.js -m -c -o dist/index.min.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -14,12 +17,18 @@
     "inference",
     "detection",
     "classification",
-    "lightSeg"
+    "segmentation"
   ],
   "author": "linguomin",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/linguomin/inference-plugin/issues"
   },
-  "homepage": "https://github.com/linguomin/inference-plugin#readme"
+  "homepage": "https://github.com/linguomin/inference-plugin#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-3": "^6.24.1",
+    "uglify-js": "^3.12.0"
+  }
 }
