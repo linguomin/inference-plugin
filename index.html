@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>plugin</title>
-    <script src="./src/index.js"></script>
+    <!-- <script src="./src/index.js"></script> -->
     <style>
       #canvas {
         width: 1000px;
@@ -16,7 +16,8 @@
   </head>
   <body>
     <div id="canvas"></div>
-    <script>
+    <script type="module">
+      import senseInference from "./src/index.js";
       const plugin = new senseInference("canvas");
       const data = [];
 
