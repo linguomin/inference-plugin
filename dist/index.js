@@ -171,46 +171,37 @@ var senseInference = function () {
 
       return new Promise(function (resolve) {
         var virtualCanvas = document.createElement("canvas");
-        // 生成加载图片
-        var image = new Image();
-        image.src = _this2.image.url;
-        image.onload = function () {
-          _this2.image.width ? image.width = _this2.image.width : "";
-          _this2.image.height ? image.height = _this2.image.height : "";
+        virtualCanvas.width = _this2.segmentation.length;
+        virtualCanvas.height = _this2.segmentation[0].length;
+        virtualCanvas.setAttribute("style", "visibility: hidden");
+        document.body.append(virtualCanvas);
+        // 获取画笔
+        var virtualCtx = virtualCanvas.getContext("2d");
+        virtualCtx.lineWidth = 1;
 
-          virtualCanvas.width = image.width;
-          virtualCanvas.height = image.height;
+        for (var y = 0; y <= _this2.segmentation.length; y++) {
+          for (var x = 0; x <= _this2.segmentation[0].length; x++) {
+            if (!_this2.segmentation[y] || _this2.segmentation[y][x] === 0) {
+              continue;
+            }
 
-          virtualCanvas.setAttribute("style", "visibility: hidden");
-          document.body.append(virtualCanvas);
-          // 获取画笔
-          var virtualCtx = virtualCanvas.getContext("2d");
-          virtualCtx.lineWidth = 1;
-
-          for (var y = 0; y <= _this2.segmentation.length; y++) {
-            for (var x = 0; x <= _this2.segmentation[0].length; x++) {
-              if (!_this2.segmentation[y] || _this2.segmentation[y][x] === 0) {
-                continue;
-              }
-
-              if (x == 0) {
-                virtualCtx.beginPath();
-                virtualCtx.strokeStyle = _this2.segmentationStyle[_this2.segmentation[y][x]];
-                virtualCtx.moveTo(y, x);
-              } else if (_this2.segmentation[y][x] == _this2.segmentation[y][x - 1]) {
-                virtualCtx.lineTo(y, x);
-              } else {
-                virtualCtx.stroke();
-                virtualCtx.beginPath();
-                virtualCtx.strokeStyle = _this2.segmentationStyle[_this2.segmentation[y][x]];
-                virtualCtx.moveTo(y, x);
-              }
+            if (x == 0) {
+              virtualCtx.beginPath();
+              virtualCtx.strokeStyle = _this2.segmentationStyle[_this2.segmentation[y][x]];
+              virtualCtx.moveTo(y, x);
+            } else if (_this2.segmentation[y][x] == _this2.segmentation[y][x - 1]) {
+              virtualCtx.lineTo(y, x);
+            } else {
+              virtualCtx.stroke();
+              virtualCtx.beginPath();
+              virtualCtx.strokeStyle = _this2.segmentationStyle[_this2.segmentation[y][x]];
+              virtualCtx.moveTo(y, x);
             }
           }
-          var base64Url = virtualCanvas.toDataURL("image/png");
-          document.body.removeChild(virtualCanvas);
-          resolve(base64Url);
-        };
+        }
+        var base64Url = virtualCanvas.toDataURL("image/png");
+        document.body.removeChild(virtualCanvas);
+        resolve(base64Url);
       });
     }
 

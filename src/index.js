@@ -155,50 +155,41 @@ export default class senseInference {
   loadSegmentation() {
     return new Promise((resolve) => {
       const virtualCanvas = document.createElement("canvas");
-      // 生成加载图片
-      const image = new Image();
-      image.src = this.image.url;
-      image.onload = () => {
-        this.image.width ? (image.width = this.image.width) : "";
-        this.image.height ? (image.height = this.image.height) : "";
+      virtualCanvas.width = this.segmentation.length;
+      virtualCanvas.height = this.segmentation[0].length;
+      virtualCanvas.setAttribute("style", "visibility: hidden");
+      document.body.append(virtualCanvas);
+      // 获取画笔
+      const virtualCtx = virtualCanvas.getContext("2d");
+      virtualCtx.lineWidth = 1;
 
-        virtualCanvas.width = image.width;
-        virtualCanvas.height = image.height;
+      for (let y = 0; y <= this.segmentation.length; y++) {
+        for (let x = 0; x <= this.segmentation[0].length; x++) {
+          if (!this.segmentation[y] || this.segmentation[y][x] === 0) {
+            continue;
+          }
 
-        virtualCanvas.setAttribute("style", "visibility: hidden");
-        document.body.append(virtualCanvas);
-        // 获取画笔
-        const virtualCtx = virtualCanvas.getContext("2d");
-        virtualCtx.lineWidth = 1;
-
-        for (let y = 0; y <= this.segmentation.length; y++) {
-          for (let x = 0; x <= this.segmentation[0].length; x++) {
-            if (!this.segmentation[y] || this.segmentation[y][x] === 0) {
-              continue;
-            }
-
-            if (x == 0) {
-              virtualCtx.beginPath();
-              virtualCtx.strokeStyle = this.segmentationStyle[
-                this.segmentation[y][x]
-              ];
-              virtualCtx.moveTo(y, x);
-            } else if (this.segmentation[y][x] == this.segmentation[y][x - 1]) {
-              virtualCtx.lineTo(y, x);
-            } else {
-              virtualCtx.stroke();
-              virtualCtx.beginPath();
-              virtualCtx.strokeStyle = this.segmentationStyle[
-                this.segmentation[y][x]
-              ];
-              virtualCtx.moveTo(y, x);
-            }
+          if (x == 0) {
+            virtualCtx.beginPath();
+            virtualCtx.strokeStyle = this.segmentationStyle[
+              this.segmentation[y][x]
+            ];
+            virtualCtx.moveTo(y, x);
+          } else if (this.segmentation[y][x] == this.segmentation[y][x - 1]) {
+            virtualCtx.lineTo(y, x);
+          } else {
+            virtualCtx.stroke();
+            virtualCtx.beginPath();
+            virtualCtx.strokeStyle = this.segmentationStyle[
+              this.segmentation[y][x]
+            ];
+            virtualCtx.moveTo(y, x);
           }
         }
-        const base64Url = virtualCanvas.toDataURL("image/png");
-        document.body.removeChild(virtualCanvas);
-        resolve(base64Url);
-      };
+      }
+      const base64Url = virtualCanvas.toDataURL("image/png");
+      document.body.removeChild(virtualCanvas);
+      resolve(base64Url);
     });
   }
 
