@@ -98,6 +98,9 @@ const lightSeg = new senseInference("myCanvas");
 const color = { 0: '#000', 1: "red" };
 lightSeg.addSegmentationColor({ 0: "#000", 1: "red" });
 
+// 强制设置原图图片大小
+plugin.setImageSize({ width: 512, height: 512 });
+
 // 添加图像分割数据
 lightSeg.addSegmentation(data);
 

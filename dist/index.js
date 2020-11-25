@@ -70,8 +70,8 @@ var senseInference = function () {
       var image = new Image();
       image.src = this.image.url;
       image.onload = function () {
-        _this.image.width = image.width;
-        _this.image.height = image.height;
+        _this.image.width ? image.width = _this.image.width : _this.image.width = image.width;
+        _this.image.height ? image.height = _this.image.height : _this.image.height = image.height;
         _this.image.aspectRatio = _this.image.width / _this.image.height;
 
         // 通过画布比跟图片比计算加载后的图片高宽
@@ -175,8 +175,12 @@ var senseInference = function () {
         var image = new Image();
         image.src = _this2.image.url;
         image.onload = function () {
+          _this2.image.width ? image.width = _this2.image.width : "";
+          _this2.image.height ? image.height = _this2.image.height : "";
+
           virtualCanvas.width = image.width;
           virtualCanvas.height = image.height;
+
           virtualCanvas.setAttribute("style", "visibility: hidden");
           document.body.append(virtualCanvas);
           // 获取画笔
@@ -310,6 +314,18 @@ var senseInference = function () {
     key: "addSegmentationColor",
     value: function addSegmentationColor(data) {
       this.segmentationStyle = data;
+    }
+
+    // 设置图片大小
+
+  }, {
+    key: "setImageSize",
+    value: function setImageSize(_ref) {
+      var width = _ref.width,
+          height = _ref.height;
+
+      this.image.width = width;
+      this.image.height = height;
     }
 
     // 生成随机颜色

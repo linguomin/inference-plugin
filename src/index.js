@@ -52,8 +52,12 @@ export default class senseInference {
     const image = new Image();
     image.src = this.image.url;
     image.onload = () => {
-      this.image.width = image.width;
-      this.image.height = image.height;
+      this.image.width
+        ? (image.width = this.image.width)
+        : (this.image.width = image.width);
+      this.image.height
+        ? (image.height = this.image.height)
+        : (this.image.height = image.height);
       this.image.aspectRatio = this.image.width / this.image.height;
 
       // 通过画布比跟图片比计算加载后的图片高宽
@@ -155,8 +159,12 @@ export default class senseInference {
       const image = new Image();
       image.src = this.image.url;
       image.onload = () => {
+        this.image.width ? (image.width = this.image.width) : "";
+        this.image.height ? (image.height = this.image.height) : "";
+
         virtualCanvas.width = image.width;
         virtualCanvas.height = image.height;
+
         virtualCanvas.setAttribute("style", "visibility: hidden");
         document.body.append(virtualCanvas);
         // 获取画笔
@@ -260,6 +268,12 @@ export default class senseInference {
   // 添加颜色
   addSegmentationColor(data) {
     this.segmentationStyle = data;
+  }
+
+  // 设置图片大小
+  setImageSize({ width, height }) {
+    this.image.width = width;
+    this.image.height = height;
   }
 
   // 生成随机颜色
