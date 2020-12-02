@@ -248,6 +248,9 @@ export default class senseInference {
 
   // 添加图像分类数据
   addClassification(data) {
+    if (!(data instanceof Array)) {
+      return;
+    }
     for (const item of data) {
       if (item.classes) {
         const arr = Object.values(item.classes);
