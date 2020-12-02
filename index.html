@@ -19,17 +19,25 @@
     <script type="module">
       import senseInference from "./src/index.js";
       const plugin = new senseInference("canvas");
-      const data = [];
+      const data = [
+        {
+          classes: {
+            0: 0.5,
+            1: 0,
+            2: 0,
+          },
+        },
+      ];
 
-      for (let i = 0; i < 512; i++) {
-        data[i] = [];
-        for (let j = 0; j < 512; j++) {
-          data[i][j] = Math.round(Math.random() * 120);
-        }
-      }
+      // for (let i = 0; i < 512; i++) {
+      //   data[i] = [];
+      //   for (let j = 0; j < 512; j++) {
+      //     data[i][j] = Math.round(Math.random() * 120);
+      //   }
+      // }
       // plugin.addSegmentationColor({ 0: "#000", 1: "red" });
       // plugin.setImageSize({ width: 512, height: 512 });
-      plugin.addSegmentation(data);
+      plugin.addClassification(data);
       plugin.init("./src/image/test.jpeg");
       // plugin.init("./Selection_004.png");
       console.log(plugin);

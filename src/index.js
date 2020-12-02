@@ -10,7 +10,7 @@ export default class senseInference {
     }; // 画布中图片的信息
 
     this.detection = null; // 物体检测数据
-    this.classification = null; // 图像分类数据
+    this.classification = []; // 图像分类数据
     this.segmentation = null; // 图像分割数据
 
     this.detectionStyle = {
@@ -144,11 +144,16 @@ export default class senseInference {
 
   // 加载图像分类数据
   loadClassification() {
-    this.drawText(
-      this.classification.label,
-      [this.senseImage.position[0] + 20, this.senseImage.position[1] + 40],
-      this.classificationStyle
-    );
+    this.classification.forEach((item, index) => {
+      this.drawText(
+        item.label,
+        [
+          this.senseImage.position[0] + 20,
+          this.senseImage.position[1] + 40 * (index + 1),
+        ],
+        this.classificationStyle
+      );
+    });
   }
 
   // 加载图片分割数据
@@ -243,7 +248,14 @@ export default class senseInference {
 
   // 添加图像分类数据
   addClassification(data) {
-    this.classification = data;
+    for (const item of data) {
+      if (item.classes) {
+        const arr = Object.values(item.classes);
+        const maxValue = Math.max.apply(null, arr);
+        const maxValueIndex = arr.indexOf(maxValue);
+        this.classification.push({ label: maxValueIndex.toString() });
+      }
+    }
   }
 
   // 添加图像分割数据

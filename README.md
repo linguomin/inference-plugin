@@ -68,9 +68,16 @@ detection.init(url);
 ```classification
 const url = "./img.png";
 
-const data = {
-  label: "苹果",
-}; // label为必需，如添加了字段插件不执行，如有需求请提需求
+const data = [
+  {
+    classes:{
+      0:0.5,
+      1:0,
+      2:0
+    }
+  }
+]; // classes为必需（不存在该字段则不显示标签）
+// 取classes对象中value最大值的key为标签label
 
 // 初始化实例
 const classification = new senseInference("myCanvas");
@@ -104,7 +111,7 @@ const color = { 0: '#000', 1: "red" };
 lightSeg.addSegmentationColor({ 0: "#000", 1: "red" });
 
 // 强制设置原图图片大小
-plugin.setImageSize({ width: 512, height: 512 });
+lightSeg.setImageSize({ width: 512, height: 512 });
 
 // 添加图像分割数据
 lightSeg.addSegmentation(data);

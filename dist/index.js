@@ -22,7 +22,7 @@ var senseInference = function () {
     }; // 画布中图片的信息
 
     this.detection = null; // 物体检测数据
-    this.classification = null; // 图像分类数据
+    this.classification = []; // 图像分类数据
     this.segmentation = null; // 图像分割数据
 
     this.detectionStyle = {
@@ -159,7 +159,11 @@ var senseInference = function () {
   }, {
     key: "loadClassification",
     value: function loadClassification() {
-      this.drawText(this.classification.label, [this.senseImage.position[0] + 20, this.senseImage.position[1] + 40], this.classificationStyle);
+      var _this2 = this;
+
+      this.classification.forEach(function (item, index) {
+        _this2.drawText(item.label, [_this2.senseImage.position[0] + 20, _this2.senseImage.position[1] + 40 * (index + 1)], _this2.classificationStyle);
+      });
     }
 
     // 加载图片分割数据
@@ -167,34 +171,34 @@ var senseInference = function () {
   }, {
     key: "loadSegmentation",
     value: function loadSegmentation() {
-      var _this2 = this;
+      var _this3 = this;
 
       return new Promise(function (resolve) {
         var virtualCanvas = document.createElement("canvas");
-        virtualCanvas.width = _this2.segmentation.length;
-        virtualCanvas.height = _this2.segmentation[0].length;
+        virtualCanvas.width = _this3.segmentation.length;
+        virtualCanvas.height = _this3.segmentation[0].length;
         virtualCanvas.setAttribute("style", "visibility: hidden");
         document.body.append(virtualCanvas);
         // 获取画笔
         var virtualCtx = virtualCanvas.getContext("2d");
         virtualCtx.lineWidth = 1;
 
-        for (var y = 0; y <= _this2.segmentation.length; y++) {
-          for (var x = 0; x <= _this2.segmentation[0].length; x++) {
-            if (!_this2.segmentation[y] || _this2.segmentation[y][x] === 0) {
+        for (var y = 0; y <= _this3.segmentation.length; y++) {
+          for (var x = 0; x <= _this3.segmentation[0].length; x++) {
+            if (!_this3.segmentation[y] || _this3.segmentation[y][x] === 0) {
               continue;
             }
 
             if (x == 0) {
               virtualCtx.beginPath();
-              virtualCtx.strokeStyle = _this2.segmentationStyle[_this2.segmentation[y][x]];
+              virtualCtx.strokeStyle = _this3.segmentationStyle[_this3.segmentation[y][x]];
               virtualCtx.moveTo(y, x);
-            } else if (_this2.segmentation[y][x] == _this2.segmentation[y][x - 1]) {
+            } else if (_this3.segmentation[y][x] == _this3.segmentation[y][x - 1]) {
               virtualCtx.lineTo(y, x);
             } else {
               virtualCtx.stroke();
               virtualCtx.beginPath();
-              virtualCtx.strokeStyle = _this2.segmentationStyle[_this2.segmentation[y][x]];
+              virtualCtx.strokeStyle = _this3.segmentationStyle[_this3.segmentation[y][x]];
               virtualCtx.moveTo(y, x);
             }
           }
@@ -283,7 +287,35 @@ var senseInference = function () {
   }, {
     key: "addClassification",
     value: function addClassification(data) {
-      this.classification = data;
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
+
+      try {
+        for (var _iterator3 = data[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var item = _step3.value;
+
+          if (item.classes) {
+            var arr = Object.values(item.classes);
+            var maxValue = Math.max.apply(null, arr);
+            var maxValueIndex = arr.indexOf(maxValue);
+            this.classification.push({ label: maxValueIndex.toString() });
+          }
+        }
+      } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion3 && _iterator3.return) {
+            _iterator3.return();
+          }
+        } finally {
+          if (_didIteratorError3) {
+            throw _iteratorError3;
+          }
+        }
+      }
     }
 
     // 添加图像分割数据
