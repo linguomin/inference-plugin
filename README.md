@@ -7,7 +7,7 @@
 ### 安装
 
 ```install
-npm istall inference-plugin
+npm install inference-plugin
 ```
 
 ### 开发环境（linux）
