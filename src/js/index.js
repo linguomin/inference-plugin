@@ -1,45 +1,15 @@
-# inference-plugin
-
-描述：根据算法得到的推理结果展示物体检测、图像分类、图像分割内容
-
-## 使用方法
-
-### 安装
-
-```install
-npm install inference-plugin
-```
-
-### 开发环境
-
-安装依赖
-npm install
-启动开发服务
-npm start
-
-### 开发环境（linux）
-
-控制台build后dist下输入命令python -m SimpleHTTPServer
-启动服务
-
-### 组件内引入
-
-```import
-import SenseInferenceRender from 'inference-plugin';
-```
-
-### 实例化前提
-
-***声明一个div作为承载容器，例：***
-
-`<div id="myCanvas"></div>`
-
-<!-- 获取DOM -->
-const DOM = document.getElementById("myCanvas");
-<!-- 引入图片 -->
+import SenseInferenceRender from "./inference";
 import test from "../image/test.jpeg";
 
-<!-- 准备数据 -->
+const DOM = document.getElementById("canvas");
+const mockData = [];
+
+for (let i = 0; i < 100; i++) {
+  mockData[i] = [];
+  for (let j = 0; j < 100; j++) {
+    mockData[i][j] = Math.round(Math.random() * 12);
+  }
+}
 const data = [
   {
     // 检测
@@ -68,9 +38,23 @@ const data = [
       width: 100,
       height: 100,
     },
-    feature: [[0,1],[0,1],[0,1]], // 如果二进制
+    feature: mockData,
     label_matrix:
       "AAAAQEBAAAAQEBAAAAAQEBAAAAQEBAAAAAQEBAAAAQEBAAQEBAAAAAAAQEBAQEBAQEBAQEBA",
+  },
+  {
+    // 检测
+    type: "detection",
+    father_index: 0,
+    label: "老虎", // 表示其意义
+    bbox: {
+      // 框区域
+      left: 240,
+      top: 330,
+      width: 166,
+      height: 469,
+    },
+    confidence: 0.98, // 概率
   },
   {
     // 分类
@@ -95,7 +79,29 @@ const data = [
     },
   },
   {
-    // 关键点 暂时不支持
+    // 分类
+    type: "classification",
+    father_index: 0,
+    bbox: {
+      // 框区域
+      left: 1040,
+      top: 330,
+      width: 166,
+      height: 469,
+    },
+    attribute: "动物", // 分类属性，一张图片的分类属性可能会有多个，会被拆开作为一个独立的节点（比如“球类”，“大小”）；但是一个属性的所有分类作为一个独立的整体
+    classes: {
+      // 各个分类的意义和其概率
+      篮球: 0.20996715128421783,
+      狼王: 0.48788318037986755,
+      排球: 0.19172067940235138,
+      高尔夫: 0.10272260755300522,
+      乒乓球: 0.0072526871226727962,
+      网球: 0.000453635846497491,
+    },
+  },
+  {
+    // 关键点
     type: "keypoint",
     father_index: 0,
     bbox: {
@@ -121,12 +127,7 @@ const data = [
       },
     ],
   },
-]
+];
 
 const inference = new SenseInferenceRender({ dom: DOM, url: test, data: data });
 console.log(inference);
-
-// 获取无底图png图片
-const imgbase64 = inference.base64png;
-
-***插件如有bug请联系linguomin_sam@163.com***
