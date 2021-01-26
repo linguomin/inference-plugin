@@ -1,6 +1,35 @@
 # inference-plugin
 
-描述：根据算法得到的推理结果展示物体检测、图像分类、图像分割内容
+描述：根据算法得到的推理结果展示物体检测、图像分类、图像分割、关键点内容
+
+## 开发环境
+
+***安装依赖***
+
+```install
+npm install
+```
+
+***启动开发服务***
+
+```start
+npm start
+```
+
+## 线上环境
+
+***编译***
+
+```build
+npm run build
+```
+
+***运行build生成的dist文件***
+
+```run
+1、打开控制台进入dist文件夹
+2、执行命令： python -m SimpleHTTPServer
+```
 
 ## 使用方法
 
@@ -10,36 +39,22 @@
 npm install inference-plugin
 ```
 
-### 开发环境
-
-安装依赖
-npm install
-启动开发服务
-npm start
-
-### 开发环境（linux）
-
-控制台build后dist下输入命令python -m SimpleHTTPServer
-启动服务
-
-### 组件内引入
-
-```import
-import SenseInferenceRender from 'inference-plugin';
-```
-
-### 实例化前提
-
-***声明一个div作为承载容器，例：***
+***HTML声明一个div作为承载容器，例：***
 
 `<div id="myCanvas"></div>`
 
-<!-- 获取DOM -->
-const DOM = document.getElementById("myCanvas");
-<!-- 引入图片 -->
+***js逻辑，例：***
+
+```javascript
+// 引入方法
+import SenseInferenceRender from 'inference-plugin';
+// 引入图片
 import test from "../image/test.jpeg";
 
-<!-- 准备数据 -->
+// 获取DOM
+const DOM = document.getElementById("myCanvas");
+
+// 准备数据
 const data = [
   {
     // 检测
@@ -128,5 +143,6 @@ console.log(inference);
 
 // 获取无底图png图片
 const imgbase64 = inference.base64png;
+```
 
 ***插件如有bug请联系linguomin_sam@163.com***
