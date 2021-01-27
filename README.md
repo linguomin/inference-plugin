@@ -83,7 +83,7 @@ const data = [
       width: 100,
       height: 100,
     },
-    feature: [[0,1],[0,1],[0,1]], // 如果二进制
+    feature: [[0,1],[0,1],[0,1]], // 如果传输的是二维数组请使用feature字段，如果是二进制该字段不需传
     label_matrix:
       "AAAAQEBAAAAQEBAAAAAQEBAAAAQEBAAAAAQEBAAAAQEBAAQEBAAAAAAAQEBAQEBAQEBAQEBA",
   },
