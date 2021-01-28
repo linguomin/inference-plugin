@@ -292,7 +292,7 @@ class SenseInferenceRender extends InitImage {
       ? item.bbox.fontFamily
       : this.font.fontFamily;
     this.ctx.font = `${fontSize}px ${fontFamily}`;
-    if (item.classes) {
+    if (item.classes && Object.keys(item.classes).length) {
       const arr = Object.values(item.classes);
       const maxValue = Math.max(...arr);
       const maxValueIndex = arr.indexOf(maxValue);
