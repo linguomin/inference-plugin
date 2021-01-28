@@ -18,8 +18,8 @@ const data = [
     label: "老虎", // 表示其意义
     bbox: {
       // 框区域
-      left: 540,
-      top: 330,
+      left: 500,
+      top: 30,
       width: 166,
       height: 469,
     },
@@ -35,8 +35,8 @@ const data = [
       // feature区域
       left: 0,
       top: 0,
-      width: 100,
-      height: 100,
+      width: 260,
+      height: 280,
     },
     feature: mockData,
     label_matrix:
@@ -49,8 +49,8 @@ const data = [
     label: "老虎", // 表示其意义
     bbox: {
       // 框区域
-      left: 240,
-      top: 330,
+      left: 560,
+      top: 30,
       width: 166,
       height: 469,
     },
@@ -62,21 +62,13 @@ const data = [
     father_index: 0,
     bbox: {
       // 框区域
-      left: 1240,
-      top: 330,
+      left: 0,
+      top: 0,
       width: 166,
       height: 469,
     },
     attribute: "球类", // 分类属性，一张图片的分类属性可能会有多个，会被拆开作为一个独立的节点（比如“球类”，“大小”）；但是一个属性的所有分类作为一个独立的整体
-    classes: {
-      // 各个分类的意义和其概率
-      篮球: 0.20996715128421783,
-      足球: 0.48788318037986755,
-      排球: 0.19172067940235138,
-      高尔夫: 0.10272260755300522,
-      乒乓球: 0.0072526871226727962,
-      网球: 0.000453635846497491,
-    },
+    classes: {},
   },
   {
     // 分类

@@ -86,6 +86,9 @@ function computedCanvasImageSizePosition(canvas, image) {
  * @returns { detection: Array, classification: Array, segmentation: Array, keypoint: Array }
  */
 function listenChangeData(data, scale, position) {
+  if (JSON.stringify(data) === "{}") {
+    return [];
+  }
   const result = [];
   for (const item of data) {
     // 计算box缩放后的大小
@@ -176,6 +179,13 @@ class SenseInferenceRender extends InitImage {
           this.scale,
           this.sizePosition.position
         );
+        this.ctx.drawImage(
+          image,
+          this.sizePosition.position.x,
+          this.sizePosition.position.y,
+          this.sizePosition.size.width,
+          this.sizePosition.size.height
+        );
         for (const item of this.data) {
           if (item.type === "detection") {
             this.drawDetectionData(item);
@@ -201,32 +211,6 @@ class SenseInferenceRender extends InitImage {
             });
           }
         }
-        setTimeout(() => {
-          // 生成透明图
-          this.base64png = this.canvas.toDataURL("image/png");
-          // 加载底图
-          image.src = this.url;
-          image.onload = () => {
-            this.ctx.drawImage(
-              image,
-              this.sizePosition.position.x,
-              this.sizePosition.position.y,
-              this.sizePosition.size.width,
-              this.sizePosition.size.height
-            );
-            // 将透明图加载在底图上面
-            image.src = this.base64png;
-            image.onload = () => {
-              this.ctx.drawImage(
-                image,
-                this.sizePosition.position.x,
-                this.sizePosition.position.y,
-                this.sizePosition.size.width,
-                this.sizePosition.size.height
-              );
-            };
-          };
-        });
       }
     });
   }

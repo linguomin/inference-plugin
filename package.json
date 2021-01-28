@@ -1,6 +1,6 @@
 {
   "name": "inference-plugin",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "根据算法得到的推理结果展示物体检测、图像分类、图像分割内容",
   "main": "src/js/inference.js",
   "scripts": {

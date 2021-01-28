@@ -141,8 +141,8 @@ const data = [
 const inference = new SenseInferenceRender({ dom: DOM, url: test, data: data });
 console.log(inference);
 
-// 获取无底图png图片
-const imgbase64 = inference.base64png;
+// 获取无底图png图片(暂时不支持使用)
+// const imgbase64 = inference.base64png;
 ```
 
 ***插件如有bug请联系linguomin_sam@163.com***
