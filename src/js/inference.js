@@ -31,7 +31,7 @@ class InitImage extends CreateContainer {
   }
 
   createImage() {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const image = new Image();
       image.src = this.url;
       image.onload = () => {
@@ -39,12 +39,12 @@ class InitImage extends CreateContainer {
         const canvasParam = {
           width: this.dom.clientWidth,
           height: this.dom.clientHeight,
-          ratio: this.canvasRatio,
+          ratio: this.canvasRatio
         };
         const imageParam = {
           width: image.width,
           height: image.height,
-          ratio: this.imageRatio,
+          ratio: this.imageRatio
         };
         // 计算画布里面的图片大小位置
         this.sizePosition = computedCanvasImageSizePosition(
@@ -91,6 +91,10 @@ function listenChangeData(data, scale, position) {
   }
   const result = [];
   for (const item of data) {
+    if (item.type === "segmentation") {
+      result.push(item);
+      continue;
+    }
     // 计算box缩放后的大小
     if (item.bbox) {
       item.bbox.left = item.bbox.left / scale + position.x;
@@ -111,47 +115,14 @@ function listenChangeData(data, scale, position) {
 }
 
 /**
- * @description 生成随机颜色
- * @returns 十六进制颜色 #000000
+ * @description 生成随机rgba颜色
+ * @returns { r: number, g: number, b: number, a: number }
  */
 function getRandomColor() {
-  return "#" + Math.random().toString(16).slice(2, 8);
-}
-
-/**
- * @description computedSegmentationFeature处理图像分割二进制数据
- * @param label_matrix 图像分割二进制数据解析
- */
-function computedSegmentationFeature(label_matrix, width) {
-  // 解析base64解码
-  const dec = window.atob(label_matrix);
-  const bs = [];
-  for (let index = 0; index < dec.length; index++) {
-    bs[index] = dec.charCodeAt(index);
-  }
-  const arr = chunk(bs, width);
-  const result = [];
-  for (let i = 0; i < arr[0].length; i++) {
-    result[i] = [];
-  }
-  for (let i = 0; i < arr.length; i++) {
-    for (let j = 0; j < arr[i].length; j++) {
-      result[j][i] = arr[i][j];
-    }
-  }
-
-  return result;
-}
-
-/**
- * @description 将数据分成指定大小的数组
- * @param { data: Array, size: number }
- * @return { Array }
- */
-function chunk(data, size) {
-  return Array.from({ length: Math.ceil(data.length / size) }, (v, i) =>
-    data.slice(i * size, i * size + size)
-  );
+  const r = Math.floor(Math.random() * 255);
+  const g = Math.floor(Math.random() * 255);
+  const b = Math.floor(Math.random() * 255);
+  return { r, g, b, a: 150 };
 }
 
 /**
@@ -164,40 +135,25 @@ class SenseInferenceRender extends InitImage {
     this.bboxStyle = {
       strokeStyle: "red",
       lineWidth: 1,
-      fillStyle: "transparent",
+      fillStyle: "transparent"
     };
     this.randomColor = {};
     this.font = {
       fontSize: 14,
       fontFamily: "微软雅黑",
-      color: "#000",
+      color: "#000"
     };
-    this.createImage().then((image) => {
+    this.createImage().then(image => {
       if (image) {
         this.data = listenChangeData(
           data,
           this.scale,
           this.sizePosition.position
         );
-        this.ctx.drawImage(
-          image,
-          this.sizePosition.position.x,
-          this.sizePosition.position.y,
-          this.sizePosition.size.width,
-          this.sizePosition.size.height
-        );
+
         for (const item of this.data) {
-          if (item.type === "detection") {
-            this.drawDetectionData(item);
-          }
-          if (item.type === "classification") {
-            this.drawClassificationData(item);
-          }
-          if (item.type === "keypoint") {
-            this.drawKeypointData();
-          }
           if (item.type === "segmentation") {
-            this.drawSegmentationData(item).then((url) => {
+            this.drawSegmentationData(item).then(url => {
               image.src = url;
               image.onload = () => {
                 this.ctx.drawImage(
@@ -210,7 +166,41 @@ class SenseInferenceRender extends InitImage {
               };
             });
           }
+          if (item.type === "detection") {
+            this.drawDetectionData(item);
+          }
+          if (item.type === "classification") {
+            this.drawClassificationData(item);
+          }
+          if (item.type === "keypoint") {
+            this.drawKeypointData();
+          }
         }
+
+        setTimeout(() => {
+          this.base64png = this.canvas.toDataURL("image/png");
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+          image.src = this.url;
+          image.onload = () => {
+            this.ctx.drawImage(
+              image,
+              this.sizePosition.position.x,
+              this.sizePosition.position.y,
+              this.sizePosition.size.width,
+              this.sizePosition.size.height
+            );
+            image.src = this.base64png;
+            image.onload = () => {
+              this.ctx.drawImage(
+                image,
+                0,
+                0,
+                this.canvas.width,
+                this.canvas.height
+              );
+            };
+          };
+        });
       }
     });
   }
@@ -329,41 +319,45 @@ class SenseInferenceRender extends InitImage {
   // 处理图像分割数据
   drawSegmentationData(item) {
     this.computedRandomColor();
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const segCanvas = document.createElement("canvas");
-      const feature = item.feature
-        ? item.feature
-        : computedSegmentationFeature(item.label_matrix, item.bbox.width);
-      segCanvas.width = feature.length;
-      segCanvas.height = feature[0].length;
+
+      segCanvas.width = item.bbox.width;
+      segCanvas.height = item.bbox.height;
       segCanvas.setAttribute("style", "visibility: hidden");
       document.body.append(segCanvas);
 
       // 获取画笔
       const segCanvasCtx = segCanvas.getContext("2d");
-      segCanvasCtx.lineWidth = 1;
+      // 创建新的空白图片
+      const segImage = segCanvasCtx.createImageData(
+        item.bbox.width,
+        item.bbox.height
+      );
 
-      for (let y = 0; y <= feature.length; y++) {
-        for (let x = 0; x <= feature[0].length; x++) {
-          if (!feature[y] || feature[y][x] === 0) {
-            continue;
-          }
+      // 解析base64解码
+      const dec = window.atob(item.label_matrix);
 
-          if (x == 0) {
-            segCanvasCtx.beginPath();
-            segCanvasCtx.strokeStyle = this.randomColor[feature[y][x]];
-            segCanvasCtx.moveTo(y, x);
-          } else if (feature[y][x] == feature[y][x - 1]) {
-            segCanvasCtx.lineTo(y, x);
-          } else {
-            segCanvasCtx.stroke();
-            segCanvasCtx.beginPath();
-            segCanvasCtx.strokeStyle = this.randomColor[feature[y][x]];
-            segCanvasCtx.moveTo(y, x);
-          }
-        }
+      const bs = [];
+      for (let index = 0; index < dec.length; index++) {
+        bs[index] = dec.charCodeAt(index);
       }
+
+      for (let i = 0; i < bs.length; i++) {
+        if (bs[i] === 0) {
+          continue;
+        }
+
+        segImage.data[i * 4 + 0] = this.randomColor[bs[i]].r;
+        segImage.data[i * 4 + 1] = this.randomColor[bs[i]].g;
+        segImage.data[i * 4 + 2] = this.randomColor[bs[i]].b;
+        segImage.data[i * 4 + 3] = this.randomColor[bs[i]].a;
+      }
+
+      segCanvasCtx.putImageData(segImage, 0, 0);
+
       const base64Url = segCanvas.toDataURL("image/png");
+
       document.body.removeChild(segCanvas);
       resolve(base64Url);
     });
@@ -374,7 +368,7 @@ class SenseInferenceRender extends InitImage {
 
   // 添加随机颜色
   computedRandomColor() {
-    for (let index = 0; index <= 100; index++) {
+    for (let index = 1; index <= 100; index++) {
       this.randomColor[index] = getRandomColor();
     }
   }

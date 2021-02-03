@@ -6,7 +6,7 @@ module.exports = {
   // 入口js路径
   entry: {
     index: "./src/js/index.js",
-    inference: "./src/js/inference.js",
+    inference: "./src/js/inference.js"
   },
   // 动态监测并实时更新页面
   devServer: {
@@ -23,7 +23,7 @@ module.exports = {
     // 默认8080，可不写
     port: 8080,
     // 热更新，无需刷新
-    hot: true,
+    hot: true
   },
   // 方便追踪源代码错误
   // devtool: "source-map",
@@ -35,15 +35,15 @@ module.exports = {
       filename: "index.html",
       template: "./src/index.html",
       chunks: ["index"],
-      title: "Development",
-    }),
+      title: "Development"
+    })
   ],
   // 编译输出配置
   output: {
     // js生成到dist/js，[name]表示保留原js文件名
     filename: "js/[name].js",
     // 输出路径为dist
-    path: path.resolve(__dirname, "dist"),
+    path: path.resolve(__dirname, "dist")
   },
   module: {
     rules: [
@@ -52,9 +52,9 @@ module.exports = {
         loader: "file-loader",
         options: {
           name: "[name].[ext]?[hash]",
-          outputPath: "image/",
-        },
-      },
-    ],
-  },
+          outputPath: "image/"
+        }
+      }
+    ]
+  }
 };

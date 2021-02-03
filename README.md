@@ -83,7 +83,6 @@ const data = [
       width: 100,
       height: 100,
     },
-    feature: [[0,1],[0,1],[0,1]], // 如果传输的是二维数组请使用feature字段，如果是二进制该字段不需传
     label_matrix:
       "AAAAQEBAAAAQEBAAAAAQEBAAAAQEBAAAAAQEBAAAAQEBAAQEBAAAAAAAQEBAQEBAQEBAQEBA",
   },
@@ -141,8 +140,8 @@ const data = [
 const inference = new SenseInferenceRender({ dom: DOM, url: test, data: data });
 console.log(inference);
 
-// 获取无底图png图片(暂时不支持使用)
-// const imgbase64 = inference.base64png;
+// 如果需要获取无底图png图片，可以按下面的代码进行获取，不需要就不用写
+const imgbase64 = inference.base64png;
 ```
 
 ***插件如有bug请联系linguomin_sam@163.com***
