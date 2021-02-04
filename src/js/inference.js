@@ -70,7 +70,7 @@ function computedCanvasImageSizePosition(canvas, image) {
   if (image.ratio > canvas.ratio) {
     result.size = { width: canvas.width, height: canvas.width / image.ratio };
   } else {
-    result.size = { width: canvas.height / image.ratio, height: canvas.height };
+    result.size = { width: canvas.height * image.ratio, height: canvas.height };
   }
   if (canvas.width > image.width) {
     result.position = { x: (canvas.width - result.size.width) / 2, y: 0 };
