@@ -322,8 +322,8 @@ class SenseInferenceRender extends InitImage {
     return new Promise(resolve => {
       const segCanvas = document.createElement("canvas");
 
-      segCanvas.width = item.bbox.width;
-      segCanvas.height = item.bbox.height;
+      segCanvas.width = item.width;
+      segCanvas.height = item.height;
       segCanvas.setAttribute("style", "visibility: hidden");
       document.body.append(segCanvas);
 
@@ -331,8 +331,8 @@ class SenseInferenceRender extends InitImage {
       const segCanvasCtx = segCanvas.getContext("2d");
       // 创建新的空白图片
       const segImage = segCanvasCtx.createImageData(
-        item.bbox.width,
-        item.bbox.height
+        item.width,
+        item.height
       );
 
       // 解析base64解码
@@ -358,7 +358,8 @@ class SenseInferenceRender extends InitImage {
 
       const base64Url = segCanvas.toDataURL("image/png");
 
-      document.body.removeChild(segCanvas);
+      // document.body.removeChild(segCanvas);
+      console.log(base64Url);
       resolve(base64Url);
     });
   }
@@ -368,7 +369,7 @@ class SenseInferenceRender extends InitImage {
 
   // 添加随机颜色
   computedRandomColor() {
-    for (let index = 1; index <= 100; index++) {
+    for (let index = 1; index <= 500; index++) {
       this.randomColor[index] = getRandomColor();
     }
   }
